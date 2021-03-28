@@ -7,8 +7,8 @@ import math
 from pylab import *
 from scipy import stats
 import sys
-from initData import *
-from graphing import *
+import initData
+import graphing
 
 fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName = initData.loadData(argv[0], argv[1])
 graphing.cumulativeGraph(fwhm,fwhmX,fwhmY,centX,centY,flux,fileName)
