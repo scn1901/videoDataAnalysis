@@ -1,3 +1,5 @@
+
+
 ######################
 # function name: findVideoLoc
 # date: 03.10.2021
@@ -36,9 +38,9 @@ def instrumentMag(flux):
 # description: load data and save to necessary arrays
 
 
-def loadData(dir, num): #must be strings
+def loadData(direct, num): #must be strings
 
-	fileName = dir + '.ota' + num + '.fits'
+	fileName = direct + '.ota' + num + '.fits'
 	hdul = fits.open(fileName)
 	vidLoc = findVideoLoc(hdul)
 	data = hdul[vidLoc].data

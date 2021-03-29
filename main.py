@@ -11,5 +11,6 @@ import initData
 import graphing
 
 fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName = initData.loadData(argv[0], argv[1])
+data = [fwhm, fwhmX, fwhmY, centX, centY, flux]
 graphing.cumulativeGraph(fwhm,fwhmX,fwhmY,centX,centY,flux,fileName)
 graphing.dataGraph(fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName)

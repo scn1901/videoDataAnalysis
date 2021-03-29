@@ -8,23 +8,20 @@
 
 def cumulativeGraph(fwhm, fwhmX, fwhmY, centX, centY, flux, fileName):
 	
-	res[0] = stats.cumfreq(fwhm, numbins=400)
-	res[1] = stats.cumfreq(fwhmX, numbins=400)
-	res[2] = stats.cumfreq(fwhmY, numbins=400)
-	res[3] = stats.cumfreq(centX, numbins=400)
-	res[4] = stats.cumfreq(centY, numbins=400)
-	res[5] = stats.cumfreq(flux, numbins=400)
-	x[0] = res[0].lowerlimit + np.linspace(0, res[0].binsize*res[0].cumcount.size, res[0].cumcount.size)
-	x[1] = res[1].lowerlimit + np.linspace(0, res[1].binsize*res[1].cumcount.size, res[1].cumcount.size)
-	x[2] = res[2].lowerlimit + np.linspace(0, res[2].binsize*res[2].cumcount.size, res[2].cumcount.size)
-	x[3] = res[3].lowerlimit + np.linspace(0, res[3].binsize*res[3].cumcount.size, res[3].cumcount.size)
-	x[4] = res[4].lowerlimit + np.linspace(0, res[4].binsize*res[4].cumcount.size, res[4].cumcount.size)
-	x[5] = res[5].lowerlimit + np.linspace(0, res[5].binsize*res[5].cumcount.size, res[5].cumcount.size)
+	data = [fwhm, fwhmX, fwhmY, centX, centY, flux]
+	res = []
+	x = []
+	i = 0
+	for i in data:
+		res.append(stats.cumfreq(fwhm, numbins=400))
+		x.append(res[i].lowerlimit + np.linspace(0, res[i].binsize*res[i].cumcount.size, res[i].cumcount.size))
 
+	i = 0
 	fig, axs = plt.subplots(2, 3, i+1)
 	fig.suptitle(fileName + ' cumulative history')
 	title = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
 	data = [fwhm, fwhmX, fwhmY, centX, centY, flux]
+	
 	for i in axs:
 		axs[i].set_title(title[i])
 		axs[i].bar(x[i], res[i].cumcount/len(data[i]), width = res[i].binsize)
