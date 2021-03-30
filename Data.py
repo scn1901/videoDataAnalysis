@@ -30,9 +30,11 @@ class Data:
 		self.flux = None
 		self.instrMag = None
 		self.time = None
+		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
 
-		self.percentile16 = None
-		self.percentile84 = None
+		self.percentile16 = []
+		self.percentile84 = []
+		self.dataMedian = []
 
 		self.fileName = fileName
 
@@ -54,6 +56,8 @@ class Data:
 		self.centY = data.field('centroid_y')
 		self.flux = data.field('flux')
 		self.time = data.field('frame_start_time')
+		for i in fileData:
+			self.dataMedian.append(np.median(fileData[i]))
 		instrumentMag(fluxData)
 		hdul.close()
 
@@ -131,5 +135,36 @@ class Data:
 			self.percentile84 = findPercentile(res, 0.84)
 
 
+	###################
+	# function name: newArray
+	# date: 03.01.2021
+	# update: 03.29.2021
+	# description: creates an array of the values between percentile 16 and 84 (originally named distribution in statistics.py)
+
+	def newArray(dataField, per16, per84):
+		newArr = []
+		i = 0:
+		while (i < dataField.size):
+			if(dataField[i] > per16 and dataField[i] < per84):
+				newArr.append(dataField[i])
+			i += 1
+		return newArr;
+
+	###################
+	# function name: findGSigma
+	# date: 03.29.2021
+	# update: 03.29.2021
+	# description: function finding the gaussian sigma of a data set
+
+	def findGSigma(dataField, index):
+		correctedDataArray = []
+		
+
+
+	####################
+	# function name: getGSigma
+	# date: 03.29.2021
+	# update: 03.29.2021
+	# description: collect gaussian sigma of all files
 
 
