@@ -3,15 +3,28 @@
 ######################
 # function name: findVideoLoc
 # date: 03.10.2021
-# update: 03.22.2021
-# description: find the array location for the video
+# update: 04.08.2021
+# description: find the array location for the video using the cellmode
 
-def findVideoLoc(hdul):
-	res = 0
-	for x in hdul:
-		if (isinstance(hdul[x], TableHDU)):
-			res = x
-	return res;
+def findVideoLoc(fileName):
+	
+
+#######################
+# function name: collectFileNames
+# date: 04.06.2021
+# update: 04.08.2021
+# description: splice the file names and 
+
+def collectFileNames(directoryName):
+	dirNames = []
+	for name in glob.glob('*.cells.txt'):
+		dirNames.append(name)
+	########Once I am able to access the files, this part should be used to find the string CELLMODE
+	while (i < len(cellmodeString)):
+		if(cellmodeString[i] == 'V'):
+			vidLoc = i
+	######## might need to loop for the multiple files, else, loop the function
+
 
 
 #######################

@@ -12,38 +12,38 @@ import math
 class ChipData:
 
 	def __init__(self):
-		self.fileName = []
-		self.fwhm = []
-		self.fwhmX = []
-		self.fwhmY = []
-		self.centX = []
-		self.centY = []
-		self.flux = []
-		self.instrMag = []
-		self.time = []
-		self.percentile16 = []
-		self.percentile84 = []
-		self.dataMedian = []
+		self.fileName = None
+		self.fwhm = None
+		self.fwhmX = None
+		self.fwhmY = None
+		self.centX = None
+		self.centY = None
+		self.flux = None
+		self.instrMag = None
+		self.time = None
+		self.percentile16 = None
+		self.percentile84 = None
+		self.dataMedian = [0.00]*6
 		self.gSigma = [0.00]*6
 		self.gSigmaCorr = [0.00]*6
 		# change to array of pointers. utilize less memory allocation
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
 
 	def __init__(self, fileName, hdul):
-		self.fwhm = []
-		self.fwhmX = []
-		self.fwhmY = []
-		self.centX = []
-		self.centY = []
-		self.flux = []
-		self.instrMag = []
-		self.time = []
+		self.fwhm = None
+		self.fwhmX = None
+		self.fwhmY = None
+		self.centX = None
+		self.centY = None
+		self.flux = None
+		self.instrMag = None
+		self.time = None
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
-		self.percentile16 = []
-		self.percentile84 = []
-		self.dataMedian = []
-		self.gSigma = []
-		self.gSigmaCorr = []
+		self.percentile16 = [0.00]*6
+		self.percentile84 = [0.00]*6
+		self.dataMedian = [0.00]*6
+		self.gSigma = [0.00]*6
+		self.gSigmaCorr = [0.00]*6
 		self.setData(hdul)
 		self.fileName = fileName
 
@@ -81,38 +81,18 @@ class ChipData:
 	def setData(self, hdul):
 		vidLoc = self.findVideoLoc(hdul)
 		data = hdul[65].data
-		self.fwhm.append(data.field('fwhm'))
-		self.fwhmX.append(data.field('fwhm_x'))
-		self.fwhmY.append(data.field('fwhm_y'))
-		self.centX.append(data.field('centroid_x'))
-		self.centY.append(data.field('centroid_y'))
-		self.flux.append(data.field('flux'))
-		self.time.append(data.field('frame_start_time'))
+		self.fwhm = (data.field('fwhm'))
+		self.fwhmX = (data.field('fwhm_x'))
+		self.fwhmY = (data.field('fwhm_y'))
+		self.centX = (data.field('centroid_x'))
+		self.centY = (data.field('centroid_y'))
+		self.flux = (data.field('flux'))
+		self.time = (data.field('frame_start_time'))
 		for i in range(0,len(self.fileData)):
-			self.dataMedian.append(np.median(self.fileData[i]))
-		self.instrMag.append(self.instrumentMag())
+			self.dataMedian[i] = (np.median(self.fileData))
+		self.instrMag[i] = (self.instrumentMag())
 		self.getPercentile()
 		self.getGSigma()
-
-	########################
-	# function name: setDataFolder
-	# date: 03.28.2021
-	# update: 03.29.2021
-	# description: sets data with the full fileName, used when full filename is known (files in a directory)
-# unnecessary for current class usage
-#	def setDataFolder(self, fileName):
-#		hdul = fits.open(fileName)
-#		vidLoc = findVideoLoc(hdul)
-#		data = hdul[vidLoc].data
-#		fwhm = data.field('fwhm')
-#		fwhmX = data.field('fwhm_x')
-#		fwhmY = data.field('fwhm_y')
-#		centX = data.field('centroid_x')
-#		centY = data.field('centroid_y')
-#		flux = data.field('flux')
-#		time = data.field('frame_start_time')
-#		instrumentMag(fluxData)
-#		hdul.close()
 
 	#######################
 	# function name: instrumentMag
