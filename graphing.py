@@ -29,21 +29,21 @@ def cumulativeGraph(DataClass):
 	title = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
 	data = [DataClass.fwhm, DataClass.fwhmX, DataClass.fwhmY, DataClass.centX, DataClass.centY, DataClass.flux]
 	
-	for n in range(0,len(axs)):
-		print(i)
-		print(m)
+	for n in range(0,6):
+		#print(i)
+		#print(m)
 		axs[i, m].set_title(title[n])
 		axs[i, m].bar(x[n], res[n].cumcount/len(data[n]), width = res[n].binsize)
 		plt.hlines(0.16, min(x[n]), max(x[n]))
 		plt.hlines(0.84, min(x[n]), max(x[n]))
 		plt.grid()
-		figTitle = DataClass.fileName+' '+title[n]
-		plt.savefig(figTitle)
 		i += 1
 		if (i == 3):
 			i = 0
 			m = 1
-		show()
+	figTitle = DataClass.fileName+'.png'
+	print(figTitle)
+	plt.savefig(figTitle)
 
 
 ############################
@@ -56,13 +56,19 @@ def dataGraph(DataClass):
 	dataName = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
 	fig, axs = plt.subplots(3,2)
 	fig.suptitle(DataClass.fileName + ' data plots')
-	for x in DataClass.fileData:
-		axs[x].plot(DataClass.time, DataClass.fileData[x])
-		axs[x].set_xlabel(dataName[x])
-		axs[x].set_ylabel('time')
+	n = 0
+	m = 0
+	for x in range(0, 6):
+		axs[n, m].plot(DataClass.time, DataClass.fileData[x])
+		axs[n, m].set_xlabel(dataName[x])
+		axs[n, m].set_ylabel('time')
 		plt.grid()
-		plt.savefig(DataClass.fileName+' '+dataName)
-		show()
+		n += 1
+		if (n == 3):
+			n = 0
+			m = 1
+	figTitle = DataClass.fileName+'.png'
+	plt.savefig(figTitle)
 
 
 
