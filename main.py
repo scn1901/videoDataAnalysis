@@ -5,13 +5,31 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from pylab import *
-from scipy import stats
 import sys
-import initData
-import graphing
+from graphing import cumulativeGraph
+from graphing import dataGraph
+from Data import ChipData
+import glob, os, importlib
 
 #fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName = initData.loadData(argv[0], argv[1])
 #data = [fwhm, fwhmX, fwhmY, centX, centY, flux]
 #graphing.cumulativeGraph(fwhm,fwhmX,fwhmY,centX,centY,flux,fileName)
 #graphing.dataGraph(fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName)
 
+cwd = os.getcwd()
+#os.chdir(cwd)
+
+#importlib.import_module()
+
+dirNames = []
+for name in glob.glob('*.fits'):
+	dirNames.append(name)
+
+ChipDataArray = []
+x = 0
+for file in dirNames:
+	hdul = fits.open(file)
+	ChipDataArray.append(ChipData(file, hdul))
+	cumulativeGraph(ChipDataArray[x])
+	dataGraph(ChipDataArray[x])
+	x+=1

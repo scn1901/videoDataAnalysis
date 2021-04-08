@@ -1,20 +1,26 @@
+from astropy.io import fits
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+
 #####################
 # class name: Data
 # date: 03.23.2021
 # update: 03.29.2021
 # description: class initializing/handling data
 
-class Data:
+class ChipData:
 
-	def __init__(self, fileName, fwhm_data, fwhmX_data, fwhmY_data, centX_data, centY_data, flux_data, instrMag_data):
-		self.fileName = fileName
-		self.fwhm = fwhm_data
-		self.fwhmX = fwhmX_data
-		self.fwhmY = fwhmY_data
-		self.centX = centX_data
-		self.centY = centY_data
-		self.flux = flux_data
-		self.instrMag = None
+	def __init__(self):
+		self.fileName = []
+		self.fwhm = []
+		self.fwhmX = []
+		self.fwhmY = []
+		self.centX = []
+		self.centY = []
+		self.flux = []
+		self.instrMag = []
+		self.time = []
 		self.percentile16 = []
 		self.percentile84 = []
 		self.dataMedian = []
@@ -23,27 +29,22 @@ class Data:
 		# change to array of pointers. utilize less memory allocation
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
 
-	def __init__(self, direct, num):
-		self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux, self.instrMag, self.time, self.fileName = loadData(direct, num)
-
-
-	def __init__(self, fileName):
-		self.fwhm = None
-		self.fwhmX = None
-		self.fwhmY = None
-		self.centX = None
-		self.centY = None
-		self.flux = None
-		self.instrMag = None
-		self.time = None
+	def __init__(self, fileName, hdul):
+		self.fwhm = []
+		self.fwhmX = []
+		self.fwhmY = []
+		self.centX = []
+		self.centY = []
+		self.flux = []
+		self.instrMag = []
+		self.time = []
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
-
 		self.percentile16 = []
 		self.percentile84 = []
 		self.dataMedian = []
 		self.gSigma = []
-		self.gSigmaCorr
-
+		self.gSigmaCorr = []
+		self.setData(hdul)
 		self.fileName = fileName
 
 	########################
@@ -58,6 +59,19 @@ class Data:
 		
 		hdul.close()
 
+	######################
+	# function name: findVideoLoc
+	# date: 03.10.2021
+	# update: 03.22.2021
+	# description: find the array location for the video
+
+	def findVideoLoc(self,hdul):
+		res = 0
+		for x in hdul:
+			if (isinstance(hdul[x], fits.fitsrec.FITS_rec)):
+				res = x
+		return res;
+
 	########################
 	# funcion name: setData
 	# date: 03.29.2021
@@ -65,18 +79,20 @@ class Data:
 	# decsription: sets data, called by loadDataFile
 
 	def setData(self, hdul):
-		self.vidLoc = findVideoLoc(hdul)
-		self.data = hdul[vidLoc].data
-		self.fwhm = data.field('fwhm')
-		self.fwhmX = data.field('fwhm_x')
-		self.fwhmY = data.field('fwhm_y')
-		self.centX = data.field('centroid_x')
-		self.centY = data.field('centroid_y')
-		self.flux = data.field('flux')
-		self.time = data.field('frame_start_time')
-		for i in fileData:
-			self.dataMedian.append(np.median(fileData[i]))
-		self.instrMag = instrumentMag(fluxData)
+		vidLoc = self.findVideoLoc(hdul)
+		data = hdul[65].data
+		self.fwhm.append(data.field('fwhm'))
+		self.fwhmX.append(data.field('fwhm_x'))
+		self.fwhmY.append(data.field('fwhm_y'))
+		self.centX.append(data.field('centroid_x'))
+		self.centY.append(data.field('centroid_y'))
+		self.flux.append(data.field('flux'))
+		self.time.append(data.field('frame_start_time'))
+		for i in range(0,len(self.fileData)):
+			self.dataMedian.append(np.median(self.fileData[i]))
+		self.instrMag.append(self.instrumentMag())
+		self.getPercentile()
+		self.getGSigma()
 
 	########################
 	# function name: setDataFolder
@@ -103,13 +119,15 @@ class Data:
 	# date: 03.10.2021
 	# update: 03.22.2021
 	# description: create array of instrumental magnitude
-	# np array flux? 	I believe because I use the math.log10 function, im unable to do it this way, but I will try it for the next run											################
+	# I believe because I use the math.log10 function, im unable to do it this way, but I will try it for the next run											################
 
-	def instrumentMag(flux):
-		instr_mag = []
-		instr_mag = (-2.5)*(math.log10(flux))
-		return instr_mag;
-
+	def instrumentMag(self):
+		instr_mag = [0.00]*len(self.flux)
+		i = 0
+		while(i < len(self.flux)):
+			instr_mag[i] = (-2.5)*(math.log10(self.flux[i]))
+			i += 1
+		self.instrMag = instr_mag
 
 	#################
 	# function name: findPercentile
@@ -143,11 +161,11 @@ class Data:
 	# update: 03.29.2021
 	# description: collecting the percentile data and saving it to the Class
 
-	def getPercentile(self,fileData):
-		for i in fileData:
-			res = stats.cumfreq(fileData[i], numbins = 400)
-			self.percentile16.append(findPercentile(res, 0.16))
-			self.percentile84.append(findPercentile(res, 0.84))
+	def getPercentile(self):
+		for i in self.fileData:
+			res = stats.cumfreq(self.fileData[i], numbins = 400)
+			self.percentile16.append(self.findPercentile(res, 0.16))
+			self.percentile84.append(self.findPercentile(res, 0.84))
 
 
 	###################
@@ -158,7 +176,7 @@ class Data:
 
 	def newArray(self, dataField, per16, per84):
 		newArr = []
-		i = 0:
+		i = 0
 		while (i < dataField.size):
 			if(dataField[i] > per16 and dataField[i] < per84):
 				newArr.append(dataField[i])
@@ -172,7 +190,7 @@ class Data:
 	# description: function finding the gaussian sigma of a data set
 
 	def findGSigma(self, dataField, per16, per84): 
-		correctedDataArray = newArray(dataField, per16, per84)
+		correctedDataArray = self.newArray(dataField, per16, per84)
 		gSigmaUncorrected = np.sum(np.power(dataField-np.median(dataField), 2)/dataField.size)
 		gSigmaCorrected = np.sum(np.power((correctedDataArray-np.median(correctedDataArray)), 2)/len(correctedDataArray))
 		return gSigmaUncorrected, gSigmaCorrected;
@@ -186,6 +204,6 @@ class Data:
 
 	def getGSigma(self):
 		i = 0
-		for i in self.fileData:
-			self.gSigma[i], self.gSigmaCorr[i] = findGSigma(fileData[i], percentile16[i], percentile84[i])
+		for i in fileData:
+			self.gSigma[i], self.gSigmaCorr[i] = self.findGSigma(fileData[i], percentile16[i], percentile84[i])
 	
