@@ -36,10 +36,11 @@ for file in dirNames:
 	hdul = fits.open(fileDirectory[-1])
 
 	# for now, vidLoc is 65
-	vidLoc = 65
+	vidLoc = 65#collectFileNames(file)
 
 	data = hdul[vidLoc].data
 	ChipDataArray.append(ChipData(file,data))
+	#ChipDataArray[x].createFile()
 	cumulativeGraph(ChipDataArray[x])
 	dataGraph(ChipDataArray[x])
 	x+=1

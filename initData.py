@@ -19,11 +19,15 @@ def collectFileNames(directoryName):
 	dirNames = []
 	for name in glob.glob('*.cells.txt'):
 		dirNames.append(name)
+	vidLoc = []
 	########Once I am able to access the files, this part should be used to find the string CELLMODE
+	file = open(dirNames[0]) #for now, since I'm not sure if there is only one txt file, I shall keep it at 0
+	cellmodeString = file.readline()
 	while (i < len(cellmodeString)):
 		if(cellmodeString[i] == 'V'):
-			vidLoc = i
+			vidLoc.append(i)
 	######## might need to loop for the multiple files, else, loop the function
+	return vidLoc;
 
 
 

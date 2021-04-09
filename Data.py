@@ -14,9 +14,9 @@ class ChipData:
 
 	#def __init__(self):
 		# change to array of pointers. utilize less memory allocation
-	def __init__(self, fileName, hdul):
+	def __init__(self, fileName, data):
 		self.fileName = fileName
-		self.setData(hdul)
+		self.setData(data)
 		print('created ChipData class')
 
 	########################
@@ -61,7 +61,7 @@ class ChipData:
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
 		self.dataMedian = [0.00]*6
 		for i in range(0,len(self.fileData)):
-			self.dataMedian[i] = (np.median(self.fileData))
+			self.dataMedian[i] = (np.median(self.fileData[i]))
 		self.instrMag[i] = (self.instrumentMag())
 		self.getPercentile()
 		self.getGSigma()
@@ -117,10 +117,10 @@ class ChipData:
 	def getPercentile(self):
 		self.percentile16 = []
 		self.percentile84 = []
-		for i in range(0,len(self.fileData)):
+		for i in range(0,6):
 			res = stats.cumfreq(self.fileData[i], numbins = 400)
-			self.percentile16.append(self.findPercentile(res, 0.16, len(self.fileData)))
-			self.percentile84.append(self.findPercentile(res, 0.84, len(self.fileData)))
+			self.percentile16.append(self.findPercentile(res, 0.16, len(self.fileData[i])))
+			self.percentile84.append(self.findPercentile(res, 0.84, len(self.fileData[i])))
 
 
 	###################
@@ -161,6 +161,33 @@ class ChipData:
 		i = 0
 		self.gSigma = [0.00]*6
 		self.gSigmaCorr = [0.00]*6
-		for i in range(0,len(self.fileData)):
+		for i in range(0,6):
 			self.gSigma[i], self.gSigmaCorr[i] = self.findGSigma(self.fileData[i], self.percentile16[i], self.percentile84[i])
 	
+	#####################
+	# function name: createFile
+	# date: 04.08.2021
+	# update: 04.08.2021
+	# description: create a file to print out all values
+
+	def createFile(self):
+		file = open(self.fileName+' full data.txt', 'a')
+		file.write('Sigma,Corrected Sigma,Median')
+		file.write('\n')
+		for i in range(0,6):
+			file.write(str(self.gSigma[i]))
+			if (i != 5):
+				file.write(',')
+#		i = 0
+#		file.write('\n')
+#		for i in range(0,6):
+#			file.write(str(self.gSigmaCorr[i]))
+#			if (i != 5):
+#				file.write(',')
+		i = 0
+		file.write('\n')
+		for i in range(0,6):
+			file.write(str(self.dataMedian[i]))
+			if (i != 5):
+				file.write(',')
+		file.write('\n')
