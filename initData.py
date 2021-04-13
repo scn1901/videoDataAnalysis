@@ -6,8 +6,21 @@
 # update: 04.08.2021
 # description: find the array location for the video using the cellmode
 
-def findVideoLoc(fileName):
-	
+def findVideoLoc(dataFileNames, videoLocation):
+	videoNum = []
+	videoName = []
+	hasVideo = False
+	n = 0
+	for dataString in videoLocation:
+		for i in range(0, len(dataString)):
+			if (dataString[i]=='V'):
+				videoNum.append(i)
+				hasVideo = True
+		if (hasVideo == True):
+			videoName.append(dataFileNames[n])
+		n += 1
+		hasVideo = False
+	return videoName, videoNum;
 
 #######################
 # function name: collectFileNames
@@ -16,18 +29,23 @@ def findVideoLoc(fileName):
 # description: splice the file names and 
 
 def collectFileNames(directoryName):
-	dirNames = []
 	for name in glob.glob('*.cells.txt'):
-		dirNames.append(name)
-	vidLoc = []
-	########Once I am able to access the files, this part should be used to find the string CELLMODE
-	file = open(dirNames[0]) #for now, since I'm not sure if there is only one txt file, I shall keep it at 0
-	cellmodeString = file.readline()
-	while (i < len(cellmodeString)):
-		if(cellmodeString[i] == 'V'):
-			vidLoc.append(i)
-	######## might need to loop for the multiple files, else, loop the function
-	return vidLoc;
+		dirName = name
+		#there should be only one cells.txt
+	dataFileNames = []
+	videoLocation = []
+
+	with open(dirName) as file:
+		for line in file:
+			dataFileNames.append(line)
+			videoLocation.append(file.readline())
+
+	print(dataFileNames)
+	print(videoLocation)
+
+	videoFileNames, videoNum = findVideoLoc(dataFileNames, videoLocation)
+
+	return videoFileNames, videoNums;
 
 
 

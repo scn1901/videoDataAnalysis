@@ -61,7 +61,7 @@ class ChipData:
 		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
 		self.dataMedian = [0.00]*6
 		for i in range(0,len(self.fileData)):
-			self.dataMedian[i] = (np.median(self.fileData[i]))
+			self.dataMedian[i] = (np.median(self.fileData[i])) ## double check with the cumulative histogram 0.5
 		self.instrMag[i] = (self.instrumentMag())
 		self.getPercentile()
 		self.getGSigma()
@@ -145,10 +145,8 @@ class ChipData:
 	# description: function finding the gaussian sigma of a data set
 
 	def findGSigma(self, dataField, per16, per84): 
-		correctedDataArray = self.newArray(dataField, per16, per84)
-		gSigmaUncorrected = np.sum(np.power(dataField-np.median(dataField), 2)/dataField.size)
-		gSigmaCorrected = np.sum(np.power((correctedDataArray-np.median(correctedDataArray)), 2)/len(correctedDataArray))
-		return gSigmaUncorrected, gSigmaCorrected;
+		gSigma = (per84-per16)/2.0
+		return gSigma;
 
 
 	####################
@@ -160,34 +158,21 @@ class ChipData:
 	def getGSigma(self):
 		i = 0
 		self.gSigma = [0.00]*6
-		self.gSigmaCorr = [0.00]*6
 		for i in range(0,6):
-			self.gSigma[i], self.gSigmaCorr[i] = self.findGSigma(self.fileData[i], self.percentile16[i], self.percentile84[i])
+			self.gSigma[i] = self.findGSigma(self.fileData[i], self.percentile16[i], self.percentile84[i])
 	
 	#####################
-	# function name: createFile
+	# function name: writeFile
 	# date: 04.08.2021
 	# update: 04.08.2021
-	# description: create a file to print out all values
+	# description: take in a file to print out all values
 
-	def createFile(self):
-		file = open(self.fileName+' full data.txt', 'a')
-		file.write('Sigma,Corrected Sigma,Median')
-		file.write('\n')
+	def writeFile(self, file): #add input opened file # file, one line per chip 
+		file.write('#'+ self.fileName) # commented title
 		for i in range(0,6):
+			file.write(str(self.dataMedian[i]))
+			file.write(',')
 			file.write(str(self.gSigma[i]))
 			if (i != 5):
 				file.write(',')
-#		i = 0
-#		file.write('\n')
-#		for i in range(0,6):
-#			file.write(str(self.gSigmaCorr[i]))
-#			if (i != 5):
-#				file.write(',')
-		i = 0
-		file.write('\n')
-		for i in range(0,6):
-			file.write(str(self.dataMedian[i]))
-			if (i != 5):
-				file.write(',')
-		file.write('\n')
+

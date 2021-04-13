@@ -23,7 +23,7 @@ def cumulativeGraph(DataClass):
 	i = 0
 	n = 0
 	m = 0
-	fig, axs = plt.subplots(3, 2, sharex=False)
+	fig, axs = plt.subplots(3, 2, sharex=False, constrained_layout=True)
 	fig.suptitle(DataClass.fileName + ' cumulative histogram')
 	title = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
 	
@@ -51,21 +51,22 @@ def cumulativeGraph(DataClass):
 
 def dataGraph(DataClass):
 	dataName = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
-	fig, axs = plt.subplots(3,2, sharex=False)
+	fig, axs = plt.subplots(3,2, constrained_layout=True)
 	fig.suptitle(DataClass.fileName + ' data plots')
 	n = 0
 	m = 0
 	for x in range(0, 6):
 		axs[n, m].plot(DataClass.time, DataClass.fileData[x])
-		axs[n, m].set_xlabel(dataName[x])
-		axs[n, m].set_ylabel('time')
+		axs[n, m].set_title(dataName[x]+'vs time')
+		axs[n, m].set_ylabel(dataName[x])
+		axs[n, m].set_xlabel('time')
 		n += 1
 		if (n == 3):
 			n = 0
 			m = 1
 	figTitle = DataClass.fileName+' data plot.png'
 	print(figTitle)
-	plt.savefig(figTitle)
+	#plt.savefig(figTitle)
 
 
 

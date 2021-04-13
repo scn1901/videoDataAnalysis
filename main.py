@@ -12,37 +12,38 @@ from graphing import dataGraph
 from Data import ChipData
 import glob, os, importlib
 
-#fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName = initData.loadData(argv[0], argv[1])
-#data = [fwhm, fwhmX, fwhmY, centX, centY, flux]
-#graphing.cumulativeGraph(fwhm,fwhmX,fwhmY,centX,centY,flux,fileName)
-#graphing.dataGraph(fwhm, fwhmX, fwhmY, centX, centY, flux, instrMag, time, fileName)
-
-cwd = os.getcwd()
-os.chdir(cwd+'/dataFiles')
-
-#importlib.import_module()
+#cwd = os.getcwd()
+pullDirectory = '/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/psvideo.20210121/'+sys.argv[1]
+os.chdir(pullDirectory) #pass in a directory through the arguments in command line
 
 dirNames = []
 for name in glob.glob('*.fits'):
 	dirNames.append(name)
 
 print(dirNames)
-ChipDataArray = []
-x = 0
+print(pullDirectory)
 
+ChipDataArray = [] #will hold all that have video
+
+fileDirectory = name.split(".")
+
+print(fileDirectory)
+
+resultsFile = open(fileDirectory[0]+'.txt', 'a') 
+
+n = 0
+videoFileNames, videoNum = collectFileNames(sys.argv[1])
 for file in dirNames:
-	print('in File loop')
-	fileDirectory = file.split("/")
-	hdul = fits.open(fileDirectory[-1])
 
-	# for now, vidLoc is 65
-	vidLoc = 65#collectFileNames(file)
+	# checking if the file has video file (as established by the collectFileNames function)
+	if(file == videoFileNames[n]):
+		hdul = fits.open(file)
 
-	data = hdul[vidLoc].data
-	ChipDataArray.append(ChipData(file,data))
-	#ChipDataArray[x].createFile()
-	cumulativeGraph(ChipDataArray[x])
-	dataGraph(ChipDataArray[x])
-	x+=1
+		data = hdul[videoNum[n]].data
+		ChipDataArray.append(ChipData(file, data))
+		ChipDataArray[x].writeFile(resultsFile)
+		cumulativeGraph(ChipDataArray[n])
+		dataGraph(ChipDataArray[n])
+		n+=1
 
 #show()
