@@ -2,6 +2,7 @@ from astropy.io import fits
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+from math import log10
 from scipy import stats
 
 #####################
@@ -65,6 +66,7 @@ class ChipData:
 		self.instrMag[i] = (self.instrumentMag())
 		self.getPercentile()
 		self.getGSigma()
+		print('set data')
 
 	#######################
 	# function name: instrumentMag
@@ -77,7 +79,7 @@ class ChipData:
 		instr_mag = [0.00]*len(self.flux)
 		i = 0
 		while(i < len(self.flux)):
-			instr_mag[i] = (-2.5)*(math.log10(self.flux[i]))
+			instr_mag[i] = (-2.5)*(np.log10(self.flux[i]))
 			i += 1
 		self.instrMag = instr_mag
 
@@ -168,11 +170,11 @@ class ChipData:
 	# description: take in a file to print out all values
 
 	def writeFile(self, file): #add input opened file # file, one line per chip 
-		file.write('#'+ self.fileName) # commented title
+		file.write(self.fileName+"	") # commented title
 		for i in range(0,6):
 			file.write(str(self.dataMedian[i]))
 			file.write(',')
 			file.write(str(self.gSigma[i]))
 			if (i != 5):
 				file.write(',')
-
+		file.write('\n')

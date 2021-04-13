@@ -10,6 +10,7 @@ import sys
 from graphing import cumulativeGraph
 from graphing import dataGraph
 from Data import ChipData
+from initData import collectFileNames
 import glob, os, importlib
 
 #cwd = os.getcwd()
@@ -29,21 +30,32 @@ fileDirectory = name.split(".")
 
 print(fileDirectory)
 
-resultsFile = open(fileDirectory[0]+'.txt', 'a') 
-
 n = 0
 videoFileNames, videoNum = collectFileNames(sys.argv[1])
-for file in dirNames:
 
+#pullDirectory = '/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/resultFiles/'+sys.argv[1]
+#os.chdir(pullDirectory)
+for file in dirNames:
 	# checking if the file has video file (as established by the collectFileNames function)
-	if(file == videoFileNames[n]):
+	#print(file)
+	if file in videoFileNames:
+		print(file)
+		print(videoNum[n])
 		hdul = fits.open(file)
 
-		data = hdul[videoNum[n]].data
+		data = hdul[65].data
 		ChipDataArray.append(ChipData(file, data))
-		ChipDataArray[x].writeFile(resultsFile)
+		ChipDataArray[n].writeFile(resultsFile)
 		cumulativeGraph(ChipDataArray[n])
 		dataGraph(ChipDataArray[n])
+		hdul.close()
 		n+=1
+
+resultsFile = open(fileDirectory[0]+'.txt', 'a') 
+resultsFile.write('#'+fileDirectory[0]+'\n')
+for chip in ChipDataArray:
+	chip.writeFile(checkResFile)
+
+resultsFile.close()
 
 #show()

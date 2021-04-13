@@ -1,4 +1,5 @@
-
+import sys
+import glob
 
 ######################
 # function name: findVideoLoc
@@ -14,10 +15,11 @@ def findVideoLoc(dataFileNames, videoLocation):
 	for dataString in videoLocation:
 		for i in range(0, len(dataString)):
 			if (dataString[i]=='V'):
-				videoNum.append(i)
+				videoNum.append(int(i)+1)
 				hasVideo = True
 		if (hasVideo == True):
-			videoName.append(dataFileNames[n])
+			temp = dataFileNames[n].split('/')
+			videoName.append(temp[1])
 		n += 1
 		hasVideo = False
 	return videoName, videoNum;
@@ -37,15 +39,16 @@ def collectFileNames(directoryName):
 
 	with open(dirName) as file:
 		for line in file:
-			dataFileNames.append(line)
-			videoLocation.append(file.readline())
+			temp = line.split("  ")
+			dataFileNames.append(temp[0])
+			videoLocation.append(temp[1])
 
-	print(dataFileNames)
-	print(videoLocation)
+	#print(dataFileNames)
+	#print(videoLocation)
 
 	videoFileNames, videoNum = findVideoLoc(dataFileNames, videoLocation)
 
-	return videoFileNames, videoNums;
+	return videoFileNames, videoNum;
 
 
 

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 from scipy import stats
+import sys
 
 ##########################
 # function name: cumulativeGraph
@@ -40,7 +41,7 @@ def cumulativeGraph(DataClass):
 			m = 1
 	figTitle = DataClass.fileName+' cumulative histogram.png'
 	print(figTitle)
-	plt.savefig(figTitle)
+	plt.savefig('/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/resultFiles/'+sys.argv[1]+'/'+figTitle)
 
 
 ############################
@@ -66,7 +67,7 @@ def dataGraph(DataClass):
 			m = 1
 	figTitle = DataClass.fileName+' data plot.png'
 	print(figTitle)
-	#plt.savefig(figTitle)
+	plt.savefig('/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/resultFiles/'+sys.argv[1]+'/'+figTitle)
 
 
 
