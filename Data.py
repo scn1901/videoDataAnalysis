@@ -57,9 +57,11 @@ class ChipData:
 		self.fwhmY = (data.field('fwhm_y'))
 		self.centX = (data.field('centroid_x'))
 		self.centY = (data.field('centroid_y'))
+		self.dx = (data.field('centroid_x'))-(data.field('cnpix1'))
+		self.dy = (data.field('centroid_y'))-(data.field('cnpix2'))
 		self.flux = (data.field('flux'))
 		self.time = (data.field('frame_start_time'))
-		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.centX, self.centY, self.flux]
+		self.fileData = [self.fwhm, self.fwhmX, self.fwhmY, self.dx, self.dy, self.flux]
 		self.dataMedian = [0.00]*6
 		for i in range(0,len(self.fileData)):
 			self.dataMedian[i] = (np.median(self.fileData[i])) ## double check with the cumulative histogram 0.5
@@ -97,15 +99,15 @@ class ChipData:
 		while (percent < percentile):
 			percent = res.cumcount[i]/dataSize
 			i += 1
-		if (percent > percentile and i == 0):
+		if (percent > percentile and i == 1):
 			before = 0
 			after = res.binsize
 		if (percent > percentile):
 			before = res.binsize*(i-1)
 			after = res.binsize*i
 		if (percent == percentile):
-			before = res.binsize
-			after = res.binsize
+			before = res.binsize*i
+			after = res.binsize*i
 		percentileValue = (before + after)/2
 		return percentileValue;
 		
@@ -170,11 +172,11 @@ class ChipData:
 	# description: take in a file to print out all values
 
 	def writeFile(self, file): #add input opened file # file, one line per chip 
-		file.write(self.fileName+"	") # commented title
+		file.write(self.fileName+",") # commented title
 		for i in range(0,6):
-			file.write(str(self.dataMedian[i]))
+			file.write('%.3f' % self.dataMedian[i])
 			file.write(',')
-			file.write(str(self.gSigma[i]))
+			file.write('%.6f' % self.gSigma[i])
 			if (i != 5):
 				file.write(',')
 		file.write('\n')

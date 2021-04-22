@@ -26,7 +26,7 @@ def cumulativeGraph(DataClass):
 	m = 0
 	fig, axs = plt.subplots(3, 2, sharex=False, constrained_layout=True)
 	fig.suptitle(DataClass.fileName + ' cumulative histogram')
-	title = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
+	title = ['fwhm', 'fwhm_x', 'fwhm_y', 'dx', 'dy', 'flux']
 	
 	for i in range(0,6):
 		#print(i)
@@ -35,6 +35,10 @@ def cumulativeGraph(DataClass):
 		axs[n, m].bar(x[i], res[i].cumcount/len(DataClass.fileData[i]), width = res[i].binsize)
 		axs[n, m].axhline(0.16, 0, max(DataClass.fileData[i]), color='red')
 		axs[n, m].axhline(0.84, 0, max(DataClass.fileData[i]), color='red')
+		axs[n, m].axhline(0.50, 0, max(DataClass.fileData[i]), color='red')
+		axs[n, m].set_yticks([0.16, 0.50, 0.84])
+		axs[n, m].set_xlabel('value')
+		axs[n, m].set_ylabel('quant/total')
 		n += 1
 		if (n == 3):
 			n = 0
@@ -51,14 +55,14 @@ def cumulativeGraph(DataClass):
 # description: display the data graphs
 
 def dataGraph(DataClass):
-	dataName = ['fwhm', 'fwhm_x', 'fwhm_y', 'centroid_x', 'centroid_y', 'flux']
+	dataName = ['fwhm', 'fwhm_x', 'fwhm_y', 'dx', 'dy', 'flux']
 	fig, axs = plt.subplots(3,2, constrained_layout=True)
 	fig.suptitle(DataClass.fileName + ' data plots')
 	n = 0
 	m = 0
 	for x in range(0, 6):
 		axs[n, m].plot(DataClass.time, DataClass.fileData[x])
-		axs[n, m].set_title(dataName[x]+'vs time')
+		axs[n, m].set_title(dataName[x]+' vs time')
 		axs[n, m].set_ylabel(dataName[x])
 		axs[n, m].set_xlabel('time')
 		n += 1
