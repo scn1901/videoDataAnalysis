@@ -2,6 +2,22 @@ import sys
 import glob
 
 ######################
+# function name: findVideoLocation
+# date: 03.10.2021
+# update: 04.08.2021
+# description: find the array location for an individual video file using the cellmode
+
+def findVideoLocation(cellmode):
+	videoNum = 0
+	hasVideo = False
+	for i in range(0, len(cellmode)):
+		if(cellmode[i] == 'V'):
+			hasVideo = True
+			videoNum = i
+	return videoNum, hasVideo;
+
+
+######################
 # function name: findVideoLoc
 # date: 03.10.2021
 # update: 04.08.2021

@@ -39,6 +39,7 @@ def cumulativeGraph(DataClass):
 		axs[n, m].set_yticks([0.16, 0.50, 0.84])
 		axs[n, m].set_xlabel('value')
 		axs[n, m].set_ylabel('quant/total')
+
 		n += 1
 		if (n == 3):
 			n = 0
@@ -74,5 +75,17 @@ def dataGraph(DataClass):
 	plt.savefig('/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/resultFiles/'+sys.argv[1]+'/'+figTitle)
 
 
+############################
+# function name: cellArrayGraph
+# date: 04.22.2021
+# update: 04.28.2021
+# description: with the x and y axes being dx and dy and the plotted points being error bars
 
+def cellArrayGraph(DataClass):
+	fig, ax = plt.subplots()
+	fig.suptitle('dx dy location plots')
+	ax.plot(DataClass.dx, DataClass.dy, marker="+", linestyle='None')
+	ax.set_xlabel('dx')
+	ax.set_ylabel('dy')
+	plt.savefig('/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/resultFiles/'+sys.argv[1]+'/'+DataClass.fileName + ' dx dy location plots.png')
 
