@@ -109,3 +109,20 @@ def loadData(direct, num): #must be strings
 	hdul.close()
 
 	return fwhmData, fwhmXData, fwhmYData, centXData, centYData, fluxData, instrMagData, timeData, fileName;
+
+
+
+######################
+# function name: loadDirectories
+# date: 04.29.2021
+# update: 05.02.2021
+# description: load directory names
+
+def loadDirectories(fileName):
+	dirFile = open(fileName, 'r')
+	directoryArr = []
+	for directory in dirFile:
+		directoryArr.append(directory.strip('\n'))
+	return directoryArr;
+
+
