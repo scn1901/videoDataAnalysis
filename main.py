@@ -22,7 +22,7 @@ import glob, os, importlib
 # if your directories are in the same path, you can use 
 #   cwd = os.getcwd() and pullDirectory = cwd+'/'+dirNameArr[x]
 
-dirNameArr = loadDirectories('directories.txt')
+dirNameArr = loadDirectories(sys.argv[1])
 
 CONST_DIR = '/Users/seri/Desktop/2 - project/dataFiles/128.171.123.254:22281/psvideo.20210121/'
 
