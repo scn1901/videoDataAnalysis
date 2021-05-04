@@ -1,14 +1,16 @@
 .PHONY: run
 
-run: main.dat
+run: main.pyc
 
-main.dat: main.py
-	python3 main.py main.dat
+main.pyc: main.py Data.py 
+	python3 main.py main.pyc
 
+Data.pyc: Data.py
+	python3 Data.py Data.pyc
 
 
 clean: 
-	rm -f *.dat
+	rm -f *.pyc
 
-.PHONY: main.dat clean
+.PHONY: main.pyc clean
 

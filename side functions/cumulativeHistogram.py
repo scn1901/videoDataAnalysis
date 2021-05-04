@@ -56,6 +56,7 @@ def cumulativeGraph(fileName, dataName, data, xSearchValue, percent, binNum):
 	ax.bar(x, res.cumcount/len(data), width = res.binsize)
 	#plt.xlim(xSearchValue - 0.5, xSearchValue + 0.5)
 	#plt.ylim(percent-0.05, percent + 0.05)
+	plt.savefig(title+ '.png')
 	plt.grid()
 	show()
 
